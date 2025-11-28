@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { DayPlanner } from "@/components/day-wise/DayPlanner";
 import { ListTodo } from "lucide-react";
+import { ThemeSwitch } from '@/components/theme-switch';
 
 
 export default function Home() {
@@ -40,6 +41,7 @@ export default function Home() {
               DiaAgil
             </h1>
           </div>
+          <ThemeSwitch />
         </div>
       </header>
       <main className="container mx-auto p-4 md:p-6">
