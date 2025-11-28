@@ -21,10 +21,10 @@ import { PlusCircle } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(3, {
-    message: 'Task name must be at least 3 characters.',
+    message: 'O nome da tarefa deve ter pelo menos 3 caracteres.',
   }),
   estimatedDuration: z.coerce.number().min(1, {
-    message: 'Duration must be at least 1 minute.',
+    message: 'A duração deve ser de pelo menos 1 minuto.',
   }),
   priority: z.enum(['High', 'Medium', 'Low']),
 });
@@ -51,8 +51,8 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add a New Task</CardTitle>
-        <CardDescription>What do you want to accomplish today?</CardDescription>
+        <CardTitle>Adicionar Nova Tarefa</CardTitle>
+        <CardDescription>O que você quer realizar hoje?</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -62,9 +62,9 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Task Name</FormLabel>
+                  <FormLabel>Nome da Tarefa</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Finish project report" {...field} />
+                    <Input placeholder="ex., Terminar o relatório do projeto" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -76,7 +76,7 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
                 name="estimatedDuration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Est. Duration (min)</FormLabel>
+                    <FormLabel>Duração Est. (min)</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} />
                     </FormControl>
@@ -89,17 +89,17 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
                 name="priority"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Priority</FormLabel>
+                    <FormLabel>Prioridade</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a priority" />
+                          <SelectValue placeholder="Selecione uma prioridade" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="High">High</SelectItem>
-                        <SelectItem value="Medium">Medium</SelectItem>
-                        <SelectItem value="Low">Low</SelectItem>
+                        <SelectItem value="High">Alta</SelectItem>
+                        <SelectItem value="Medium">Média</SelectItem>
+                        <SelectItem value="Low">Baixa</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -109,7 +109,7 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
             </div>
             <Button type="submit" className="w-full">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Task
+              Adicionar Tarefa
             </Button>
           </form>
         </Form>

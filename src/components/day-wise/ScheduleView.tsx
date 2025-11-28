@@ -22,7 +22,7 @@ export function ScheduleView({ schedule, isLoading }: ScheduleViewProps) {
   if (!schedule) {
     return (
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        Click the button above to generate your schedule.
+        Clique no botão acima para gerar seu cronograma.
       </div>
     );
   }

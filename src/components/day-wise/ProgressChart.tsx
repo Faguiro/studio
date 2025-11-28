@@ -25,17 +25,17 @@ export function ProgressChart({ tasks }: ProgressChartProps) {
   const pendingTasks = tasks.length - completedTasks;
 
   const chartData = [
-    { name: 'Completed', value: completedTasks, fill: 'hsl(var(--accent))' },
-    { name: 'Pending', value: pendingTasks, fill: 'hsl(var(--muted))' },
+    { name: 'Concluídas', value: completedTasks, fill: 'hsl(var(--accent))' },
+    { name: 'Pendentes', value: pendingTasks, fill: 'hsl(var(--muted))' },
   ];
 
   const chartConfig = {
     completed: {
-      label: 'Completed',
+      label: 'Concluídas',
       color: 'hsl(var(--accent))',
     },
     pending: {
-      label: 'Pending',
+      label: 'Pendentes',
       color: 'hsl(var(--muted))',
     },
   };
@@ -46,8 +46,8 @@ export function ProgressChart({ tasks }: ProgressChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Daily Progress</CardTitle>
-        <CardDescription>You have completed {completedTasks} of {totalTasks} tasks.</CardDescription>
+        <CardTitle>Progresso Diário</CardTitle>
+        <CardDescription>Você completou {completedTasks} de {totalTasks} tarefas.</CardDescription>
       </CardHeader>
       <CardContent>
         {totalTasks > 0 ? (
@@ -85,15 +85,15 @@ export function ProgressChart({ tasks }: ProgressChartProps) {
                   dominantBaseline="middle"
                   className="fill-muted-foreground text-sm"
                 >
-                  Complete
+                  Completo
                 </text>
             </PieChart>
           </ChartContainer>
         ) : (
            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 p-12 text-center h-[244px]">
             <BarChartIcon className="h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No data</h3>
-            <p className="mt-1 text-sm text-muted-foreground/80">Add tasks to see your progress.</p>
+            <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Sem dados</h3>
+            <p className="mt-1 text-sm text-muted-foreground/80">Adicione tarefas para ver seu progresso.</p>
           </div>
         )}
       </CardContent>

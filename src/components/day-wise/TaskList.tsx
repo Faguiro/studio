@@ -15,8 +15,8 @@ export function TaskList({ tasks, onUpdateTask, onDeleteTask }: TaskListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Today's Tasks</CardTitle>
-        <CardDescription>Here's what you've got on your plate.</CardDescription>
+        <CardTitle>Tarefas de Hoje</CardTitle>
+        <CardDescription>Aqui está o que você tem para fazer.</CardDescription>
       </CardHeader>
       <CardContent>
         {tasks.length > 0 ? (
@@ -33,8 +33,8 @@ export function TaskList({ tasks, onUpdateTask, onDeleteTask }: TaskListProps) {
         ) : (
           <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 p-12 text-center">
             <FileText className="h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No tasks yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground/80">Add a task above to get started!</p>
+            <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Nenhuma tarefa ainda</h3>
+            <p className="mt-1 text-sm text-muted-foreground/80">Adicione uma tarefa acima para começar!</p>
           </div>
         )}
       </CardContent>

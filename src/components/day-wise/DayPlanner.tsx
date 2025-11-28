@@ -50,8 +50,8 @@ export function DayPlanner() {
     
     if (tasksToSchedule.length === 0) {
       toast({
-        title: "No Tasks to Schedule",
-        description: "Please add some tasks or uncheck completed ones before generating a schedule.",
+        title: "Nenhuma Tarefa para Agendar",
+        description: "Por favor, adicione algumas tarefas ou desmarque as concluídas antes de gerar um cronograma.",
       });
       return;
     }
@@ -63,8 +63,8 @@ export function DayPlanner() {
       } else {
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to generate schedule.",
+          title: "Erro",
+          description: "Falha ao gerar o cronograma.",
         });
       }
     });
@@ -80,13 +80,13 @@ export function DayPlanner() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>AI Schedule</CardTitle>
-            <CardDescription>Let AI optimize your day.</CardDescription>
+            <CardTitle>Cronograma com IA</CardTitle>
+            <CardDescription>Deixe a IA otimizar o seu dia.</CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={handleGenerateSchedule} disabled={isPending} className="w-full">
               <Lightbulb className="mr-2 h-4 w-4" />
-              {isPending ? 'Generating...' : 'Generate Intelligent Schedule'}
+              {isPending ? 'Gerando...' : 'Gerar Cronograma Inteligente'}
             </Button>
             <ScheduleView schedule={schedule} isLoading={isPending} />
           </CardContent>

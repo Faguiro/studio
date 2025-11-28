@@ -14,6 +14,12 @@ interface TaskItemProps {
   onDeleteTask: (id:string) => void;
 }
 
+const priorityMap: Record<Task['priority'], string> = {
+  High: 'Alta',
+  Medium: 'Média',
+  Low: 'Baixa',
+};
+
 const priorityStyles = {
   High: 'bg-red-500/20 text-red-700 border-red-500/30 hover:bg-red-500/30',
   Medium: 'bg-yellow-500/20 text-yellow-700 border-yellow-500/30 hover:bg-yellow-500/30',
@@ -80,7 +86,7 @@ export function TaskItem({ task, onUpdateTask, onDeleteTask }: TaskItemProps) {
         id={`task-${task.id}`}
         checked={task.isComplete}
         onCheckedChange={(checked) => handleToggleComplete(Boolean(checked))}
-        aria-label={`Mark ${task.name} as complete`}
+        aria-label={`Marcar ${task.name} como concluída`}
         className="h-5 w-5"
       />
       <div className="flex-1">
@@ -91,7 +97,7 @@ export function TaskItem({ task, onUpdateTask, onDeleteTask }: TaskItemProps) {
           {task.name}
         </label>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-           <Badge variant="outline" className={cn("text-xs", priorityStyles[task.priority])}>{task.priority}</Badge>
+           <Badge variant="outline" className={cn("text-xs", priorityStyles[task.priority])}>{priorityMap[task.priority]}</Badge>
            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Est: {task.estimatedDuration} min</span>
         </div>
       </div>
@@ -104,11 +110,11 @@ export function TaskItem({ task, onUpdateTask, onDeleteTask }: TaskItemProps) {
         </div>
         <Button variant={task.isRunning ? 'destructive' : 'outline'} size="icon" onClick={handleToggleTimer} disabled={task.isComplete} className="h-8 w-8">
           {task.isRunning ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          <span className="sr-only">{task.isRunning ? 'Stop timer' : 'Start timer'}</span>
+          <span className="sr-only">{task.isRunning ? 'Parar cronômetro' : 'Iniciar cronômetro'}</span>
         </Button>
         <Button variant="ghost" size="icon" onClick={() => onDeleteTask(task.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete task</span>
+          <span className="sr-only">Excluir tarefa</span>
         </Button>
       </div>
     </div>

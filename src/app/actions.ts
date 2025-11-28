@@ -5,7 +5,7 @@ import { generateSchedule, type ScheduleInput } from '@/ai/flows/intelligent-sch
 
 export async function getAiSchedule(input: ScheduleInput) {
   if (!input.tasks || input.tasks.length === 0) {
-    return { schedule: 'Please add some tasks to generate a schedule.' };
+    return { schedule: 'Por favor, adicione algumas tarefas para gerar um cronograma.' };
   }
 
   try {
@@ -13,6 +13,6 @@ export async function getAiSchedule(input: ScheduleInput) {
     return result;
   } catch (error) {
     console.error('Error generating schedule:', error);
-    return { schedule: 'Sorry, an error occurred while generating your schedule. Please try again.' };
+    return { schedule: 'Desculpe, ocorreu um erro ao gerar seu cronograma. Por favor, tente novamente.' };
   }
 }
