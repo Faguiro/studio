@@ -1,15 +1,27 @@
 'use client';
 
-import { useUser } from '@/firebase';
+import { useUser, useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { DayPlanner } from "@/components/day-wise/DayPlanner";
-import { ListTodo } from "lucide-react";
+import { ListTodo, LogOut, User as UserIcon } from "lucide-react";
 import { ThemeSwitch } from '@/components/theme-switch';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { signOut } from 'firebase/auth';
 
 
 export default function Home() {
   const { user, isUserLoading } = useUser();
+  const auth = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -17,6 +29,20 @@ export default function Home() {
       router.push('/login');
     }
   }, [user, isUserLoading, router]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+  
+  const getInitials = (email?: string | null) => {
+    if (!email) return '?';
+    return email.substring(0, 2).toUpperCase();
+  }
 
   if (isUserLoading || !user) {
     return (
@@ -41,7 +67,38 @@ export default function Home() {
               DiaAgil
             </h1>
           </div>
-          <ThemeSwitch />
+          <div className="flex items-center gap-4">
+            <ThemeSwitch />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10">
+                     <AvatarImage src={user.photoURL ?? undefined} alt="Avatar do usuário" />
+                     <AvatarFallback>
+                      {user.isAnonymous ? <UserIcon/> : getInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user.isAnonymous ? 'Usuário Anônimo' : (user.displayName || 'Usuário')}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.isAnonymous ? 'Modo de demonstração' : user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sair</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
       <main className="container mx-auto p-4 md:p-6">
