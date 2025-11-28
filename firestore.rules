@@ -1,0 +1,104 @@
+/**
+ * This ruleset enforces a strict user-ownership model for the DayWise application.
+ *
+ * Core Philosophy:
+ * The security model is built on the principle that users have exclusive control
+ * over their own data. All data is scoped directly to the authenticated user,
+ * preventing any user from accessing, modifying, or even seeing another user's data.
+ *
+ * Data Structure:
+ * All user-specific data is stored under the path `/users/{userId}`, where `{userId}`
+ * is the Firebase Authentication UID of the user. This path-based ownership is the
+ * cornerstone of the security model.
+ *
+ * Key Security Decisions:
+ * - User Isolation: A user can only read, write, and delete their own `/users/{userId}`
+ *   document. They cannot interact with any other user's document.
+ * - No User Enumeration: Listing the entire `/users` collection is explicitly
+ *   disallowed to protect user privacy and prevent data scraping.
+ * - Self-Creation: An authenticated user is permitted to create their own initial
+ *   user profile document, but not one for any other user ID.
+ * - Ownership Integrity: The `id` field within a user document must match the
+ *   document's ID (`userId`) upon creation and cannot be changed, ensuring the link
+ *   between the auth identity and the database record is permanent.
+ *
+ * Denormalization for Authorization:
+ * Authorization is based entirely on the document's path (`/users/{userId}`). This
+ * is the most performant and secure method, as it requires no extra database reads
+ * (like `get()` or `exists()`) to verify permissions.
+ *
+ * Structural Segregation:
+ * Not applicable in this model, as all data is private and follows a uniform
+ * structure. There are no public or shared collections.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions for Reusable Logic
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's ID matches the requested document's ID.
+     * This is the primary function for enforcing user ownership.
+     * @param userId The user ID from the document path.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * A robust check for update/delete operations.
+     * Ensures the user is the owner AND the document already exists.
+     * @param userId The user ID from the document path.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * Validates required data for creating a new user document.
+     * Ensures the internal 'id' field matches the document's path ID (userId).
+     * This is critical for maintaining relational integrity.
+     * @param userId The user ID from the document path.
+     */
+    function hasValidUserDataForCreate(userId) {
+      // In Prototyping Mode, we only validate the field essential for authorization.
+      // We ensure the document's internal ID is correctly set to the user's auth UID.
+      return isOwner(userId) && request.resource.data.id == userId;
+    }
+
+    /**
+     * Validates immutability of critical user fields during an update.
+     * Prevents changing the core 'id' that links the document to the user.
+     */
+    function isImmutableOwnerData() {
+      // Ensures the 'id' field cannot be changed after the document is created.
+      return request.resource.data.id == resource.data.id;
+    }
+
+    /**
+     * @description Controls access to individual user profile documents.
+     * @path /users/{userId}
+     * @allow (get) An authenticated user with UID 'user_abc' requests their own document at `/users/user_abc`.
+     * @allow (create) An authenticated user 'user_abc' creates their profile at `/users/user_abc`, providing `{ "id": "user_abc", ... }`.
+     * @deny (list) Any user attempts to list the `/users` collection to prevent user enumeration.
+     * @deny (get) User 'user_123' attempts to read the document at `/users/user_abc`.
+     * @deny (create) User 'user_123' attempts to create a document at `/users/user_abc`.
+     * @principle Restricts access to a user's own data tree, enforcing strict data privacy.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if hasValidUserDataForCreate(userId);
+      allow update: if isExistingOwner(userId) && isImmutableOwnerData();
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

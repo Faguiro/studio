@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the DayWise application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "userName": {
+          "type": "string",
+          "description": "The user's chosen user name."
+        },
+        "registrationDate": {
+          "type": "string",
+          "description": "The date and time the user registered.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "userName",
+        "registrationDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Includes denormalized fields for authorization independence (none in this case as ownership is path-based).",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user.  This is used for path-based ownership."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This design prioritizes security and scalability for the DayWise application. User data is stored under `/users/{userId}` ensuring clear ownership and straightforward security rules. This structure avoids complex authorization logic. This approach ensures Authorization Independence, as access control is directly tied to the user's ID in the path and avoids any `get()` calls to other documents to validate permissions.\n\nTo support the application's core features, this design enforces a simple data structure focused on user-specific data. All core features (Task Input, Priority Assignment, Intelligent Scheduling, Time Tracking, and Progress Visualization) are scoped to the individual user, keeping the data model clean and scalable.\n\nQAPs are inherently supported through path-based ownership (`/users/{userId}`). Listing tasks is always scoped to the user's ID, preventing unauthorized data access."
+  }
+}
